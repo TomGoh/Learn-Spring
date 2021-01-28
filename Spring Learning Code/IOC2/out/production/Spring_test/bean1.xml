@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student" class="demo.collectionType.Student">
+
+        <property name="courses">
+            <array>
+                <value>Java</value>
+                <value>Python</value>
+                <value>C Sharp</value>
+                <value>C++</value>
+            </array>
+        </property>
+
+        <property name="list">
+            <list>
+                <value>100</value>
+                <value>99</value>
+                <value>60</value>
+                <value>99</value>
+            </list>
+        </property>
+
+        <property name="map">
+            <map>
+                <entry key="name" value="Tom"/>
+                <entry key="gender" value="Male"/>
+            </map>
+        </property>
+
+        <property name="sets">
+            <set>
+                <value>MySQl</value>
+                <value>Oracle</value>
+                <value>Redis</value>
+            </set>
+        </property>
+    </bean>
+
+</beans>

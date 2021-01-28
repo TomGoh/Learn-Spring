@@ -306,7 +306,7 @@ Spring提供两个接口实现IOC：
    2. 注入属性——外部Bean
 
       外部Bean：
-   
+
       在实际操作中，如Web项目往往由三层结构组成：Servlet-Service-Dao，通过Service调用Dao即为引入外部Bean
       
       E.g.
@@ -398,17 +398,17 @@ Spring提供两个接口实现IOC：
       
       
    3. 注入属性——内部Bean与级联赋值
-   
+
       内部Bean注入即为在Spring配置文件中声明一个bean对象时，该对象包含另外一个对象，此时可以在bean的内部进行bean的声明，相互嵌套。
-   
+
       
-   
+
       E.g. 一对多关系——部门与员工
-   
+
       一个部门雇佣多个员工而一个员工属于一个部门
-   
+
       使用实体类表示这种关系：
-   
+
       ```Java
       //Department
       package demo.bean;
@@ -473,9 +473,9 @@ Spring提供两个接口实现IOC：
       }
       
       ```
-   
+
       编写配置文件：
-   
+
       ```XML
       <?xml version="1.0" encoding="UTF-8"?>
       <beans xmlns="http://www.springframework.org/schema/beans"
@@ -496,9 +496,9 @@ Spring提供两个接口实现IOC：
       
       </beans>
       ```
-   
+
       测试：
-   
+
       ```Java
       @Test
       public void testInner(){
@@ -508,13 +508,13 @@ Spring提供两个接口实现IOC：
       	System.out.println(employee.toString());
       }
       ```
-   
+
       
-   
+
    4. 注入属性——级联赋值
-   
+
       基于上述案例，修改Spring配置文件，使用`Ref`进行级联赋值：
-   
+
       ```XML
       <beans xmlns="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -533,9 +533,9 @@ Spring提供两个接口实现IOC：
           
       </beans>
       ```
-   
+
       或者，使用直接针对对象的属性赋值的方式：
-   
+
       ```XML
       <beans xmlns="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -553,9 +553,9 @@ Spring提供两个接口实现IOC：
       
       </beans>
       ```
-   
+
       测试：
-   
+
       ```Java
       @Test
       public void testCascade(){
@@ -565,10 +565,155 @@ Spring提供两个接口实现IOC：
       	System.out.println(employee.toString());
       }
       ```
-   
+
       
-   
-   
+
+   5. 注入集合属性
+
+      注入数组、List、Map等属性的集合。
+
+      编写`Student`类：
+
+      ```Java
+      package demo.collectionType;
+      
+      import java.util.Arrays;
+      import java.util.List;
+      import java.util.Map;
+      import java.util.Set;
+      
+      public class Student {
+      
+          //数组类型属性
+          private String[] courses;
+      
+          //List类型属性
+          private List<String> list;
+      
+          //Map类型的属性
+          private Map<String,String> map;
+      
+          //Set类型的属性
+          private Set<String> sets;
+      
+          public Student() {
+          }
+      
+          public String[] getCourses() {
+              return courses;
+          }
+      
+          public void setCourses(String[] courses) {
+              this.courses = courses;
+          }
+      
+          public List<String> getList() {
+              return list;
+          }
+      
+          public void setList(List<String> list) {
+              this.list = list;
+          }
+      
+          public Map<String, String> getMap() {
+              return map;
+          }
+      
+          public void setMap(Map<String, String> map) {
+              this.map = map;
+          }
+      
+          public Set<String> getSets() {
+              return sets;
+          }
+      
+          public void setSets(Set<String> sets) {
+              this.sets = sets;
+          }
+      
+          public void test(){
+              System.out.println(Arrays.toString(courses));
+              System.out.println(list);
+              System.out.println(map);
+              System.out.println(sets);
+          }
+      }
+      
+      ```
+
+      编写bean配置文件:
+
+      ```XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <beans xmlns="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      
+          <bean id="student" class="demo.collectionType.Student">
+      
+              <property name="courses">
+                  <array>
+                      <value>Java</value>
+                      <value>Python</value>
+                      <value>C Sharp</value>
+                      <value>C++</value>
+                  </array>
+              </property>
+      
+              <property name="list">
+                  <list>
+                      <value>100</value>
+                      <value>99</value>
+                      <value>60</value>
+                      <value>99</value>
+                  </list>
+              </property>
+      
+              <property name="map">
+                  <map>
+                      <entry key="name" value="Tom"/>
+                      <entry key="gender" value="Male"/>
+                  </map>
+              </property>
+      
+              <property name="sets">
+                  <set>
+                      <value>MySQl</value>
+                      <value>Oracle</value>
+                      <value>Redis</value>
+                  </set>
+              </property>
+          </bean>
+      
+      </beans>
+      ```
+
+      编写测试类：
+
+      ```Java
+      package demo.test;
+      
+      import demo.collectionType.Student;
+      import org.junit.Test;
+      import org.springframework.context.ApplicationContext;
+      import org.springframework.context.support.ClassPathXmlApplicationContext;
+      
+      public class collectionTest {
+      
+          @Test
+          public void testCollection(){
+              ApplicationContext context=new ClassPathXmlApplicationContext("bean1.xml");
+      
+              Student student =context.getBean("student",Student.class);
+              student.test();
+          }
+      
+      }
+      ```
+
+      
+
+      
 
 
 
