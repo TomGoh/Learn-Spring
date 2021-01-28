@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="employee" class="demo.bean.Employee">
+        <property name="empGender" value="Female"/>
+        <property name="empName" value="Cindy"/>
+        <!--级联赋值，直接针对对象的属性赋值-->
+        <property name="empDept" ref="dept"/>
+        <property name="empDept.departmentName" value="Technology"/>
+    </bean>
+
+    <bean id="dept" class="demo.bean.Department"></bean>
+
+</beans>
