@@ -14,6 +14,8 @@ IOC：控制反转，面向对象编程的设计原则，降低代码耦合度�
 
 主要用到**XML解析**、**工厂模式**以及**反射**三个过程。
 
+XML解析即为编写专门的Spring配置文件，在其中声明对象以及属性值。
+
 工厂模式：将类之间的调用关系交由单独的类进行中转。
 
 E.g.
@@ -713,6 +715,69 @@ Spring提供两个接口实现IOC：
 
       
 
+      在集合之中设置对象类型的值：
+      
+      ```XML
+              <!--使用ref标签设置对象列表中的对象引用，ref的值为需要填充的bean的id-->
+              <property name="courseList">
+                  <list>
+                      <ref bean="course1"></ref>
+                      <ref bean="course2"></ref>
+                  </list>
+              </property>
+          </bean>
+      
+          <bean id="course1" class="demo.collectionType.Course">
+              <property name="cName" value="Spring 5 Framework Course"/>
+          </bean>
+      
+          <bean id="course2" class="demo.collectionType.Course">
+              <property name="cName" value="MyBaits Course"/>
+          </bean>
+      ```
+      
+      
+      
+      提取List的注入部分：
+      
+      在Spring配置文件中引入名称空间util：
+      
+      ```XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <beans xmlns="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:p="http://www.springframework.org/schema/p"
+             <!--增加一个名为util的引用-->
+             xmlns:util="http://www.springframework.org/schema/util"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+             <!--模仿xsi中写法针对util进行相同的配置-->
+              http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+      
+      	<!--针对util进行配置，配置为list类型，而后即可通过id值进行引用-->
+          <util:list id="bookList">
+              <value>Book 1</value>
+              <value>Book 2</value>
+              <value>Book 3</value>
+          </util:list>
+      
+      	<!--使用声明的id为util的配置对book进行property的赋值-->
+          <bean id="book" class="demo.collectionType.Book">
+              <property name="bookList" ref="bookList"/>
+          </bean>
+      
+      </beans>
+      ```
+      
+      使用`ApplicationContext`进行`Book`对象的实例化与测试：
+      
+      ```Java
+      ApplicationContext context=new ClassPathXmlApplicationContext("bean2.xml");
+      Book book=context.getBean("book",Book.class);
+      for(String s:book.getBookList()){
+          System.out.println(s);
+      }
+      ```
+      
       
 
 
