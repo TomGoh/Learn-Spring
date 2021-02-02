@@ -19,6 +19,9 @@ public class Student {
     //Set类型的属性
     private Set<String> sets;
 
+    //学生所学习的课程集合
+    private List<Course> courseList;
+
     public Student() {
     }
 
@@ -54,10 +57,19 @@ public class Student {
         this.sets = sets;
     }
 
+    public List<Course> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(List<Course> courseList) {
+        this.courseList = courseList;
+    }
+
     public void test(){
         System.out.println(Arrays.toString(courses));
         System.out.println(list);
         System.out.println(map);
         System.out.println(sets);
+        System.out.println(courseList.get(0).getcName()+", "+courseList.get(1).getcName());
     }
 }
