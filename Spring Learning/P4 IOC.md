@@ -777,8 +777,79 @@ Spring提供两个接口实现IOC：
           System.out.println(s);
       }
       ```
-      
-      
+   
+3. `FactoryBean`
+
+   在Spring有两种Bean，一种即为前文使用的普通Bean，另一种即为工厂Bean `FactoryBean`。
+
+   普通的Bean在XML文件中使用`id`与`class`对于Bean的引用与类型进行约束，返回的类型即为`class`中定义的类型。
+
+   `FactoryBean`可以返回`class`定义类型之外的类型。
+
+   `FactoryBean`示例：
+
+   创建类实现`FactoryBean`接口，并实现接口的方法：
+
+   ```Java
+   package demo.factoryBean;
+   
+   import demo.collectionType.Course;
+   import org.springframework.beans.factory.FactoryBean;
+   
+   //FactoryBean<>中定义返回的对象类型
+   public class MyBean implements FactoryBean<Course> {
+       
+       //是否为单例
+       @Override
+       public boolean isSingleton() {
+           return false;
+       }
+   
+       //定义返回的Bean的对象
+       @Override
+       public Course getObject() throws Exception {
+           Course course=new Course();
+           course.setcName("MVC");
+           return course;
+       }
+   
+       @Override
+       public Class<?> getObjectType() {
+           return null;
+       }
+   }
+   
+   ```
+
+   配置XML文件：
+
+   ```XML
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+   
+       <bean id="myBean" class="demo.factoryBean.MyBean">
+   
+       </bean>
+   </beans>
+   ```
+
+   测试：
+
+   ```Java
+           context =new ClassPathXmlApplicationContext("bean3.xml");
+           Course myBean=context.getBean("myBean",Course.class);
+           System.out.println(myBean.getcName());
+   ```
+
+
+
+## IOC操作Bean管理（作用域与生命周期）
+
+
+
+
 
 
 

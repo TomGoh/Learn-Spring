@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="libs1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Spring Learning Code/IOC2/libs/spring-context-5.2.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Spring Learning Code/IOC2/libs/spring-core-5.2.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Spring Learning Code/IOC2/libs/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Spring Learning Code/IOC2/libs/spring-expression-5.2.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Spring Learning Code/IOC2/libs/spring-beans-5.2.6.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
