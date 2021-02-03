@@ -12,6 +12,7 @@
         <module>IOC1</module>
         <module>IOC2</module>
         <module>IOC3</module>
+        <module>IOC4</module>
     </modules>
 
     <properties>

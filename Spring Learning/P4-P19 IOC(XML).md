@@ -1,4 +1,4 @@
-# P4-P24 IOC
+# P4-P19 IOC
 
 ## IOC概念与底层原理
 
@@ -1112,11 +1112,63 @@ public class Department {
 
 
 
-## IOC操作Bean管理（引入外部属性文件）
+## IOC操作Bean管理（基于XML引入外部属性文件）
+
+引入外部的property文件来操作Bean，在XML文件中读取。
+
+以外部数据库为例
+
+1. 配置Druid连接池
+
+   直接在Spring的XML配置文件中编写内容：
+
+   ```XML
+       <!--直接链接连接池-->
+       <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+           <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+           <property name="url" value="jdbc:mysql://localhost:3306/userDb"/>
+           <property name="username" value="root"/>
+           <property name="password" value="root"/>
+       </bean>
+   ```
+
+   
+
+2. 引入外部属性文件配置连接池：
+
+   首先编写专门的property文件：
+
+   ```properties
+   pro.driverClass=com.mysql.jdbc.Driver
+   pro.url=jdbc:mysql://localhost:3306/userDb
+   pro.username=root
+   pro.password=root
+   ```
+
+   而后在Spring配置文件中使用表达式进行配置：
+
+   ```XML
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:context="http://www.springframework.org/schema/context"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+   
+       <!--引入外部属性文件-->
+       <context:property-placeholder location="jdbc.properties"/>
+       <!--使用外部文件中的定义内容配置连接池-->
+       <bean id="dataSource1" class="com.alibaba.druid.pool.DruidDataSource">
+           <property name="driverClassName" value="${pro.driverClass}"/>
+           <property name="url" value="${pro.url}"/>
+           <property name="username" value="${pro.username}"/>
+           <property name="password" value="${pro.password}"/>
+       </bean>
+   
+   </beans>
+   ```
+
+   其中专门配置了名为`context`的namespace，并使用namespace对于链接进行配置。
 
 
-
-
-
-## IOC操作Bean管理（基于注解）
 
