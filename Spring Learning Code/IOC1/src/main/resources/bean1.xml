@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置User-->
+    <bean id="user" class="demo.User"/>
+
+    <bean id="book" class="demo.book">
+        <constructor-arg name="bAuthor" value="ShakeSpare"/>
+        <constructor-arg name="bName" value="Macbeth"/>
+    </bean>
+
+</beans>
