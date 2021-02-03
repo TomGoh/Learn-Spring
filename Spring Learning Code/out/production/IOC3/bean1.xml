@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--实现自动装配-->
+    <bean id="employee" class="autowire.Employee" autowire="byName" scope="prototype">
+<!--        <property name="department" ref="department"/>-->
+    </bean>
+
+    <bean id="employee1" class="autowire.Employee" autowire="byType" scope="prototype">
+    </bean>
+
+    <bean id="department" class="autowire.Department" scope="prototype">
+
+    </bean>
+</beans>

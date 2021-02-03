@@ -847,7 +847,272 @@ Spring提供两个接口实现IOC：
 
 ## IOC操作Bean管理（作用域与生命周期）
 
+**作用域**：创建的Bean对象可以为单例或多例，可以设置其为单例或者多例。单例或多例的属性即为其作用域。
 
+在Spring中默认为单例。
+
+以Book为例，在默认情况下不同的Book对象对应的地址是一样的。
+
+设置其作用域属性：
+
+`Bean`标签中有属性`scope`用于配置作用域：
+
+- `scope="singlton"`表示单实例对象，默认为此值
+- `scope="prototype"`表示多实例对象
+
+除了作用域区别，上述两个属性的区别还有：
+
+在`scope`值为`singleton`时，加载配置文件时单实例对象已被创建：
+
+```Java
+ApplicationContext context=new ClassPathXmlApplicationContext("bean1.xml");
+```
+
+此时`bean.xml`中的对象已被创建。
+
+在`scope`值为`prototype`时，对象的创建在调用`getBean`方法时创建多实例对象。
+
+- `scope="request"`创建的对象会被放入request中
+- `scope="session"`创建的对象会被放入session中
+
+
+
+**生命周期**：对象从创建到销毁的过程
+
+Bean的生命周期：
+
+起始于Bean实例的创建（通过构造器也就是无参方法构造），
+而后可以设置Bean的属性值以及对于其他Bean的引用（即调用setter），
+继而调用Bean的初始化方法（需要进行配置），
+Bean可以在这三步后使用。
+
+当容器关闭时，Bean调用销毁方法销毁（需要进行配置）
+
+E.g.
+
+编写`Orders`Bean，自定义`setter`，`无参构造方法`，`初始化方法`以及`销毁方法`：
+
+```Java
+package demo.bean;
+
+public class Order {
+    private String oName;
+
+    //setter
+    public void setoName(String oName) {
+        this.oName = oName;
+        System.out.println("Executing Setter.");
+    }
+
+    public String getoName() {
+        return oName;
+    }
+
+    //无参数构造方法
+    public Order() {
+        System.out.println("Executing Constructor.");
+    }
+
+    //初始化方法
+    public void initMethod(){
+        System.out.println("Executing Init-Method.");
+    }
+
+    //销毁方法
+    public void destroyMethod(){
+        System.out.println("Executing Destroy-method.");
+    }
+
+}
+```
+
+对于`Order`在XML中进行配置，包括初始化方法和销毁方法的链接：
+
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="order" class="demo.bean.Order" init-method="initMethod" destroy-method="destroyMethod">
+        <property name="oName" value="Tablet"/>
+    </bean>
+</beans>
+```
+
+执行测试方法，手动实例化以及销毁：
+
+```Java
+    @Test
+    public void testLifeCycle(){
+//        ApplicationContext context=new ClassPathXmlApplicationContext("bean4.xml");
+        ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("bean4.xml");
+        Order order=context.getBean("order",Order.class);
+        System.out.println("Bean got.");
+        System.out.println("Order name:"+order.getoName());
+
+        //手动销毁Bean实例
+//        ((ClassPathXmlApplicationContext)context).close();
+        context.close();
+        System.out.println("Bean destroyed.");
+
+    }
+```
+
+在上述流程之中还有两个步骤可以执行（Bena的后置处理器）：
+
+在初始化之前与之后可以分别调用两个方法：
+
+- 在初始化之前可以将Bean的实例传递给后置处理器的方法
+- 在初始化之后可以将Bean的实例传递给后置处理器的方法
+
+E.g.
+
+创建类实现接口`BeanPostProcessor`:
+
+```Java
+package demo.bean;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+public class MyBeanPost implements BeanPostProcessor {
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("初始化之前执行的");
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("在初始化之后执行的");
+        return bean;
+    }
+    
+}
+```
+
+在XML中配置后置处理器类：
+
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="order" class="demo.bean.Order" init-method="initMethod" destroy-method="destroyMethod" >
+        <property name="oName" value="Tablet"/>
+    </bean>
+
+    <!--配置后置处理器-->
+    <bean id="myBeanPost" class="demo.bean.MyBeanPost"/>
+</beans>
+```
+
+其余参照上方代码，效果如下：
+
+```
+
+Executing Constructor.
+Executing Setter.
+初始化之前执行的
+Executing Init-Method.
+初始化之后执行的
+Bean got.
+Order name:Tablet
+Executing Destroy-method.
+Bean destroyed.
+
+Process finished with exit code 0
+
+```
+
+
+
+
+
+## IOC操作Bean管理（XML 自动装配）
+
+在前文中的属性注入均为使用XML文件中的`value`以及`ref`进行**手动装配**，**自动装配**为根据指定的装配规则以及属性的类型与名称自动完成注入。
+
+E.g.
+
+编写Bean
+
+```Java
+package autowire;
+
+public class Employee {
+
+    private Department department;
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "department=" + department +
+                '}';
+    }
+
+    public void test(){
+        System.out.println(department);
+    }
+}
+
+
+package autowire;
+
+public class Department {
+}
+
+```
+
+在配置文件中，针对bean可以使用`autowire`标签实现自动注入：
+
+- `autowire="byName"`根据名称注入，被注入的值需要和类中的属性名称一致
+- `sutowire="byType"` 根据类型注入，被注入的值不能有多个，否则报错
+
+```XML
+    <bean id="employee" class="autowire.Employee" autowire="byName" scope="prototype">
+    </bean>
+
+    <bean id="employee1" class="autowire.Employee" autowire="byType" scope="prototype">
+    </bean>
+
+    <bean id="department" class="autowire.Department" scope="prototype">
+    </bean>
+```
+
+测试：
+
+```Java
+    @Test
+    public void testAutowire(){
+        ApplicationContext context=new ClassPathXmlApplicationContext("bean1.xml");
+
+        Employee employee =context.getBean("employee",Employee.class);
+        employee.test();
+        System.out.println(employee.toString());
+
+        Employee employee1=context.getBean("employee1",Employee.class);
+        employee1.test();
+        System.out.println(employee1.toString());
+    }
+```
+
+基于XML的自动装配使用较少，一般使用注解实现自动装配。
+
+
+
+## IOC操作Bean管理（引入外部属性文件）
 
 
 
