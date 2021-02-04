@@ -11,5 +11,4 @@
         <constructor-arg name="bName" value="Macbeth"/>
     </bean>
 
-    <bean id="userService" class="demo.service.UserService"/>
 </beans>
