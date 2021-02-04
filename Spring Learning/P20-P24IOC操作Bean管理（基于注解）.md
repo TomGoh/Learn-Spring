@@ -110,14 +110,51 @@ include-filter为需要包括的类别，此处为Component，exclude-filter为�
 
 ## 基于注解的属性注入
 
-1. @Autowired
+1. `@Autowired`
 
    根据属性类型进行自动装配
 
-2. @Qualifier
+   首先创建对象并添加注解
+
+   而后在对象中注入，在类中添加属性并注解
+
+2. `@Qualifier`
 
    根据属性名进行注入
 
-3. @Rescource
+   需要结合Autowired一同使用，可以指定多个相同类对象中的某一个
+
+3. `@Rescource`
 
    可以根据属性名也可以根据类型注入
+   
+4. `@Value`
+
+   注入普通类型属性
+
+## 完全注解开发
+
+摆脱配置文件，完全使用注解：创建配置类，替代XML配置文件
+
+使用`@Configuration`注解声明类为配置类
+
+```Java
+package config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = {"dao","bean"})
+public class SpringConfig {
+}
+```
+
+而后使用的context也需要改变：
+
+```Java
+        ApplicationContext context=new AnnotationConfigApplicationContext(SpringConfig.class);
+        UserService userService=context.getBean("userService",UserService.class);
+        userService.add();
+```
+
