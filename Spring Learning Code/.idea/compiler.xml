@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="AOP1" />
         <module name="IOC5_Annotation" />
+        <module name="JDBCTemplate1" />
         <module name="IOC3" />
         <module name="IOC4" />
         <module name="IOC1" />

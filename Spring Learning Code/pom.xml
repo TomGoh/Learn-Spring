@@ -17,6 +17,7 @@
         <module>IOC5_Annotation</module>
         <module>AOP1</module>
         <module>AOP2</module>
+        <module>JDBCTemplate1</module>
     </modules>
 
     <repositories>
