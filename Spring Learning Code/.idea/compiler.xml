@@ -12,6 +12,7 @@
         <module name="IOC4" />
         <module name="IOC1" />
         <module name="IOC2" />
+        <module name="AOP2" />
       </profile>
     </annotationProcessing>
   </component>
